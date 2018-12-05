@@ -4,26 +4,29 @@ import { View, StyleSheet, Modal, Button, ScrollView } from 'react-native';
 
 const Form = t.form.Form;
 
-const newMealForm = t.struct({
-  'Meal Name': t.String,
-  Description: t.String,
-  Ingredients: t.list(t.String)
+const newPlanForm = enums => t.struct({
+  Meals: t.list(enums)
 })
 
 const options = {
   fields: {
-    Ingredients: {
+    Meals: {
       disableOrder: true,
       item: {
-        label: 'Ingredient'
+        label: 'Meal'
       }
     }
   }
 }
 
-export default class NewMealModal extends Component {
+export default class PlanForm extends Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      mealList: t.enums({
+        place: 'holder'
+      })
+    }
   }
   close() {
     this.props.close()
@@ -39,7 +42,7 @@ export default class NewMealModal extends Component {
       >
         <ScrollView style={styles.modal}>
           <View style={styles.formwrap}>
-            <Form type={newMealForm} options={options} />
+            <Form type={this.props.mealList} options={options} />
           </View>
           <View style={styles.buttons}>
             <Button onPress={this.props.close} title='Cancel' />

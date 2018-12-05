@@ -1,50 +1,66 @@
 import React from 'react';
-import t from 'tcomb-form-native';
 import {
+  Button,
   StyleSheet,
   Text,
-  TouchableHighlight,
   View,
 } from 'react-native';
-import Form from '../components/Form';
-import MostUsedCard from '../components/MostUsedCard'
+import Card from '../components/HomePageCards'
+import global from '../styles/global';
+import MealFealModal from "../components/Form"
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: ''
+      displayModal: false
     }
   }
-
-  mealForm = t.struct({
-    'Meal Name': t.String,
-    'Description': t.String,
-    Ingredients: t.String,
-    Favorite: t.Boolean
-  })
 
   static navigationOptions = {
     header: null,
   };
 
+  _onPress = which => () => {
+    if (which === 'addMeal') {
+      this.setState({
+        displayModal: !this.state.displayModal
+      })
+    }
+
+    if (which === 'browse') {
+      return 'goodby'
+    }
+    return null;
+  }
+
+  _closeModal = () => {
+    this.setState({
+      displayModal: !this.state.displayModal
+    })
+  }
+
   render() {
     return (
       <View style={styles.view}>
-        <Text style={styles.header}>Meals</Text>
-        <TouchableHighlight style={styles.button}>
-          <Text>Add New</Text>
-        </TouchableHighlight>
-        <TouchableHighlight style={styles.button}>
-          <Text>Browse</Text>
-        </TouchableHighlight>
-        <View style={styles.mostUsed}>
-          <Text style={styles.subHeader}>Most Used</Text>
-          <MostUsedCard style={styles.card}
+        <MealFealModal isVisible={this.state.displayModal} close={this._closeModal} />
+        <Text style={global.pageHeader}>Meals</Text>
+        <View style={styles.buttons}>
+          <Button style={styles.button} onPress={this._onPress('addMeal')} title='Add New' />
+          <Button onPress={this._onPress('browse')} title='Browse' />
+        </View>
+        <View style={styles.cards}>
+          <Card style={styles.card}
+            title='Most Used'
             name='Ham and Swiss'
-            description='A tasty treat of both ham AND swiss :D'
-            ingredients={['ham', 'swiss', 'love', 'heat']}
-            uses='5'
+            additionalInfo='Times Used: 5'
+            navigation={this.props.navigation}
+          />
+          <Card style={styles.card}
+            title='Random Favorite'
+            name='Lemon Chicken'
+            additionalInfo='Zesty, delicious chicken.'
+            navigation={this.props.navigation}
           />
         </View>
       </View>
@@ -58,30 +74,19 @@ const styles = StyleSheet.create({
   view: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'column',
+    justifyContent: 'space-evenly',
     backgroundColor: '#74b9ff',
     flex: 1
   },
-  button: {
-    backgroundColor: 'white',
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingLeft: 50,
-    paddingRight: 50,
-    borderRadius: 20,
+  buttons: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: 300,
+    justifyContent: 'space-around',
   },
-  header: {
-    paddingTop: 50,
-    fontSize: 30,
-    color: 'white'
-  },
-  subHeader: {
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  mostUsed: {
-    padding: 5,
-    backgroundColor: 'white'
+  cards: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    height: 280
   }
 });
