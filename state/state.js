@@ -1,5 +1,5 @@
 import {
-
+  GET_ALL_MEALS
 } from "./stateConstants.js";
 import update from "immutability-helper";
 
@@ -8,11 +8,11 @@ const initialState = {
   currentGrocery: {},
 };
 
-const reducers = function getAllCasesReducer(state = initialState, action) {
+function rootReducer(state = initialState, action) {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-export default reducers;
+export default rootReducer;
