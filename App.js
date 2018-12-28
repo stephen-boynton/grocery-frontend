@@ -3,24 +3,30 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import { ApolloProvider } from 'react-apollo';
 import AppNavigator from './navigation/AppNavigator';
-import { Provider } from "react-redux";
-import store from "./state";
-import ApolloClient from 'apollo-boost';
+import ApolloClient from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 import { withClientState } from 'apollo-link-state';
-import gql from 'graphql-tag';
 import fetch from 'node-fetch';
+import { queries } from './apollo';
 
 const cache = new InMemoryCache();
-const LOCAL_URI = 'http://localhost:4000/graphql';
-const httpLink = new HttpLink({ uri: LOCAL_URI });
+const LOCAL_URI = 'https://grocery.stephenboynton.com/graphql';
+const httpLink = new HttpLink({ uri: LOCAL_URI, fetch });
 
 const stateLink = withClientState({
   cache,
-  defaults: {},
-  resolvers: {}
+  defaults: {
+    ham: []
+  },
+  resolvers: {
+    Query: {
+      meals() {
+
+      }
+    }
+  }
 })
 
 const link = ApolloLink.from([stateLink, httpLink])
@@ -47,13 +53,11 @@ export default class App extends React.Component {
     } else {
       return (
         <ApolloProvider client={client}>
-          <Provider store={store}>
-            <View style={styles.container}>
-              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-              <AppNavigator />
-            </View>
-          </Provider>
-        </ApolloProvider>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </ApolloProvider >
       );
     }
   }

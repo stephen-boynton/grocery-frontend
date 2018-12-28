@@ -8,6 +8,8 @@ import {
 import Card from '../components/HomePageCards'
 import global from '../styles/global';
 import MealFealModal from "../components/Form"
+import { Query } from 'react-apollo';
+import { queries } from '../apollo';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -42,29 +44,38 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.view}>
-        <MealFealModal isVisible={this.state.displayModal} close={this._closeModal} />
-        <Text style={global.pageHeader}>Meals</Text>
-        <View style={styles.buttons}>
-          <Button style={styles.button} onPress={this._onPress('addMeal')} title='Add New' />
-          <Button onPress={this._onPress('browse')} title='Browse' />
-        </View>
-        <View style={styles.cards}>
-          <Card style={styles.card}
-            title='Most Used'
-            name='Ham and Swiss'
-            additionalInfo='Times Used: 5'
-            navigation={this.props.navigation}
-          />
-          <Card style={styles.card}
-            title='Random Favorite'
-            name='Lemon Chicken'
-            additionalInfo='Zesty, delicious chicken.'
-            navigation={this.props.navigation}
-          />
-        </View>
-      </View>
-    );
+      <Query query={queries.GET_MEALS}>
+        {(info) => {
+          if (info.loading) {
+            console.log('loading');
+            return <View></View>;
+          }
+          console.log(info.error, info.data, info.networkStatus);
+          return (<View style={styles.view}>
+            <MealFealModal isVisible={this.state.displayModal} close={this._closeModal} />
+            <Text style={global.pageHeader}>Meals</Text>
+            <View style={styles.buttons}>
+              <Button style={styles.button} onPress={this._onPress('addMeal')} title='Add New' />
+              <Button onPress={this._onPress('browse')} title='Browse' />
+            </View>
+            <View style={styles.cards}>
+              <Card style={styles.card}
+                title='Most Used'
+                name='Ham and Swiss'
+                additionalInfo='Times Used: 5'
+                navigation={this.props.navigation}
+              />
+              <Card style={styles.card}
+                title='Random Favorite'
+                name='Lemon Chicken'
+                additionalInfo='Zesty, delicious chicken.'
+                navigation={this.props.navigation}
+              />
+            </View>
+          </View>
+          );
+        }}
+      </Query>)
   }
 
 
